@@ -19,7 +19,7 @@ def listing(url):
         soup = BeautifulSoup(html_doc, 'html.parser')
 
         # DEBUG
-        print(url)
+        # print(url)
 
         if soup.find_all('div', 'css-1waaw1k'):
 
@@ -193,7 +193,3 @@ def listing(url):
     except HTTPError:
         print('Failed with HTTP Error:', url)
         pass
-
-
-url = 'https://www.allhomes.com.au/unit-1101-45-ainslie-avenue-braddon-act-2612'
-listing(url)
