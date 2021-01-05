@@ -109,15 +109,18 @@ def listing(url):
                     prop = soup.title.text.split(' -')[0]
                     sale_type = i.find_all('div', 'css-xscdvh')[0].string
                     price = i.find_all('div', 'css-a2p3z9')[0].string
+                    if price is None:
+                        price = 'N/A'
                     details = i.find_all('div', 'css-104pj7g')
 
                     _data = {}
                     prev_sale_details_data = {}
 
-                    for detail in details:
-                        _key = detail.text.split(': ')[0]
-                        _val = detail.text.split(': ')[1]
-                        prev_sale_details_data[_key] = _val
+                    if details:
+                        for detail in details:
+                            _key = detail.text.split(': ')[0]
+                            _val = detail.text.split(': ')[1]
+                            prev_sale_details_data[_key] = _val
 
                     try:
                         contract = prev_sale_details_data['Contract']
@@ -190,3 +193,7 @@ def listing(url):
     except HTTPError:
         print('Failed with HTTP Error:', url)
         pass
+
+
+url = 'https://www.allhomes.com.au/unit-1101-45-ainslie-avenue-braddon-act-2612'
+listing(url)

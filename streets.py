@@ -1,5 +1,6 @@
 import csv
 import urllib.request
+from urllib.error import HTTPError
 import time
 import datetime
 from bs4 import BeautifulSoup
@@ -27,74 +28,83 @@ def extractor(suburb, code):
     _code = code
     url = base_url + '{}/'.format(_suburb) + '{}'.format(_code)
     print('Url:', url)
-    f = urllib.request.urlopen(url)
-    page_data = f.read()
-    html_doc = page_data
-    soup = BeautifulSoup(html_doc, 'html.parser')
+    try:
+        f = urllib.request.urlopen(url)
+        page_data = f.read()
+        html_doc = page_data
+        soup = BeautifulSoup(html_doc, 'html.parser')
 
-    # get all the page headers
-    spans = soup.find_all('span', 'min-format-tab-header')
+        # get all the page headers
+        spans = soup.find_all('span', 'min-format-tab-header')
 
-    matches = []
+        matches = []
 
-    # loop through headers and find node with links to streets and save to matches list
-    for match in spans:
-        # print(match.string)
-        if match.string == 'Streets in':
-            matches.append(match)
+        # loop through headers and find node with links to streets and save to matches list
+        for match in spans:
+            # print(match.string)
+            if match.string == 'Streets in':
+                matches.append(match)
 
-    # get all the 'dd' elements under the parent node of the streets header
-    match_parent = matches[0].parent.parent.find_all('dd')
+        # get all the 'dd' elements under the parent node of the streets header
+        match_parent = matches[0].parent.parent.find_all('dd')
 
-    streets = []
+        streets = []
 
-    # loop through list of elements and extract the url for the street and save to streets list
-    for i in match_parent:
-        streets.append(i.contents[1].attrs['href'])
+        # loop through list of elements and extract the url for the street and save to streets list
+        for i in match_parent:
+            streets.append(i.contents[1].attrs['href'])
 
-    # DEBUG
-    # print(streets)
-
-    properties = []
-
-    # for each street, call the props function and get the property urls and save to properties list
-    for street in streets:
         # DEBUG
-        # print(street)
-        # get all property urls
-        _data = props(street)
-        if _data:
-            for i in _data:
-                properties.append(i)
-        else:
-            pass
+        # print(streets)
 
-    listings = []
+        properties = []
 
-    # for each property url, call the listing function to extract data and append to the listings list
-    for prop in properties:
-        # DEBUG
-        # print(prop)
-        _data = listing(prop)
-        listings.append(_data)
-        # best to run late at night but can add in crawler delay (in secs)
-        # time.sleep(1)
+        # for each street, call the props function and get the property urls and save to properties list
+        for street in streets:
+            # DEBUG
+            # print(street)
+            # get all property urls
+            _data = props(street)
+            if _data:
+                for i in _data:
+                    properties.append(i)
+            else:
+                pass
 
-    # filter out properties with no data (i.e. no prior sales data) from listings
-    data1 = list(filter(None, listings))
-    data = []
-    # loop through returned list and flatten to a single list
-    for item in data1:
-        for i in item:
-            data.append(i)
+        listings = []
 
-    # save list of dictionaries to csv
-    file = open('{}.csv'.format(_suburb), 'w+', newline='')
-    keys = data[0].keys()
+        # for each property url, call the listing function to extract data and append to the listings list
+        for prop in properties:
+            # DEBUG
+            # print(prop)
+            _data = listing(prop)
+            listings.append(_data)
+            # best to run late at night but can add in crawler delay (in secs)
+            # time.sleep(1)
 
-    print('Rows:', len(data))
-    with file:
-        write = csv.DictWriter(file, keys)
-        write.writeheader()
-        write.writerows(data)
-    print('End:', datetime.datetime.now())
+        # filter out properties with no data (i.e. no prior sales data) from listings
+        data1 = list(filter(None, listings))
+        data = []
+        # loop through returned list and flatten to a single list
+        for item in data1:
+            for i in item:
+                data.append(i)
+
+        # save list of dictionaries to csv
+        file = open('{}.csv'.format(_suburb), 'w+', newline='')
+        keys = data[0].keys()
+
+        print('Rows:', len(data))
+        print('Keys:', keys)
+        with file:
+            write = csv.DictWriter(file, keys)
+            write.writeheader()
+            try:
+                write.writerows(data)
+            except ValueError as e:
+                print(e)
+                pass
+        print('End:', datetime.datetime.now())
+    except HTTPError:
+        print('Failed with HTTP Error:', url)
+        pass
