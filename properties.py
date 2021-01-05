@@ -14,13 +14,23 @@ def props(url):
     html_doc = page_data
     soup = BeautifulSoup(html_doc, 'html.parser')
 
-    if soup.find_all('span', 'min-format-tab-header')[0].text == 'Properties in':
+    # Check to make sure street page has properties
+    headers_data = []
+    headers = soup.find_all('span', 'min-format-tab-header')
+    for header in headers:
+        headers_data.append(header.text)
+
+    if 'Properties in' in headers_data:
         try:
             spans = soup.find_all('div', 'four_column_wrapper')[0].find_all('dd')
             props = []
 
             for i in spans:
+                # DEBUG
+                # print(i.text)
                 props.append(i.contents[1].attrs['href'])
             return props
-        except IndexError:
+        except (IndexError, TypeError) as e:
             pass
+    else:
+        pass

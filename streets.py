@@ -59,10 +59,15 @@ def extractor(suburb, code):
 
     # for each street, call the props function and get the property urls and save to properties list
     for street in streets:
+        # DEBUG
+        # print(street)
         # get all property urls
         _data = props(street)
-        for i in _data:
-            properties.append(i)
+        if _data:
+            for i in _data:
+                properties.append(i)
+        else:
+            pass
 
     listings = []
 

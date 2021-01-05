@@ -2,7 +2,8 @@ import datetime
 from streets import extractor
 
 
-""" These modules are developed for adhoc property research.  It explores historical sales data for properties
+""" 
+These modules are developed for adhoc property research.  It explores historical sales data for properties
 in a given suburb.  The data is saved in a format ready for analysis.  There is no provision for finding
 new data over a time period, but it would be a useful feature.
 
@@ -21,15 +22,27 @@ This is a private project.  I have no association with Allhomes and it is not in
 # Add/remove as required - data must be manually obtained from the Allhomes website. See instructions in the
 # streets module.
 locations = {
-    'phillip': '121467610',
-    'holt': '121472810',
-    'cook': '121463510',
+    # 'phillip': '121467610',
+    # 'holt': '121472810',
+    # 'cook': '121463510',
     'kingston': '121488910',
     'queanbeyan-east': '121465610',
     'queanbeyan': '21451510',
     'crestwood': '121428910',
     'karabar': '121470510',
-    'melba': '121466010'
+    'melba': '121466010',
+    'macquarie': '121458810',
+    'belconnen': '121477710',
+    'lyneham': '121479010',
+    'turner': '121468510',
+    'o-connor': '121479210',
+    'braddon': '121483810',
+    'griffith': '121475410',
+    'garran': '121492310',
+    'lyons': '121482910',
+    'hughes': '121493910',
+    'curtin': '121496110',
+    'kambar': '121477510'
 }
 
 keys = locations.keys()
