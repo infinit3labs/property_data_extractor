@@ -1,4 +1,5 @@
 import datetime
+import logging
 from streets import extractor
 
 
@@ -22,31 +23,55 @@ This is a private project.  I have no association with Allhomes and it is not in
 # Add/remove as required - data must be manually obtained from the Allhomes website. See instructions in the
 # streets module.
 locations = {
-    # 'phillip': '121467610',
-    # 'holt': '121472810',
-    # 'cook': '121463510',
-    # 'kingston': '121488910',
-    # 'queanbeyan-east': '121465610',
-    # 'queanbeyan': '121451510',
-    # 'crestwood': '121428910',
-    # 'karabar': '121470510',
-    # 'melba': '121466010',
-    # 'macquarie': '121458810',
-    # 'belconnen': '121477710',
-    # 'lyneham': '121479010',
-    # 'turner': '121468510',
-    # 'o-connor': '121479210',
+    'phillip': '121467610',
+    'holt': '121472810',
+    'cook': '121463510',
+    'kingston': '121488910',
+    'queanbeyan-east': '121465610',
+    'queanbeyan': '121451510',
+    'crestwood': '121428910',
+    'karabar': '121470510',
+    'melba': '121466010',
+    'macquarie': '121458810',
+    'belconnen': '121477710',
+    'lyneham': '121479010',
+    'turner': '121468510',
+    'o-connor': '121479210',
     'braddon': '121483810',
     'griffith': '121475410',
     'garran': '121492310',
     'lyons': '121482910',
     'hughes': '121493910',
     'curtin': '121496110',
-    'kambar': '121477510'
+    'kambar': '121477510',
+    'scullin': '121481110',
+    'hawker': '121457010',
+    'evatt': '121488610',
+    'higgins': '121494510',
+    'page': '121484810',
+    'kaleen': '121471110',
+    'giralang': '121474910',
+    'ainslie': '121474310',
+    'hackett': '121460710',
+    'campbell': '121477010',
+    'flynn': '121490310',
+    'watson': '121465110',
+    'reid': '121475710',
+    'canberra': '121801010',
+    'chifley': '121497810',
+    'pearce': '121497410',
+    'farrer': '121486010',
+    'mawson': '121454110',
+    'charnwood': '121471710',
+    'swinger-hill': '121800910'
 }
 
 keys = locations.keys()
 
+logging.basicConfig(filename='../property_sales.log',
+                    level=logging.DEBUG,
+                    format='%(asctime)s:%(levelname)s:%(message)s')
+
 for key in keys:
-    print('Start:', datetime.datetime.now())
+    logging.info(f'Start: {key}: {datetime.datetime.now()}')
     extractor(suburb=key, code=locations[key])

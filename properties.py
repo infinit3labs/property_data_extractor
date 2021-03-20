@@ -1,4 +1,5 @@
 import urllib.request
+import logging
 from bs4 import BeautifulSoup
 
 

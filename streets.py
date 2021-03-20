@@ -3,6 +3,7 @@ import urllib.request
 from urllib.error import HTTPError
 import time
 import datetime
+import logging
 from bs4 import BeautifulSoup
 from properties import props
 from listing import listing
@@ -27,7 +28,7 @@ def extractor(suburb, code):
     _suburb = suburb
     _code = code
     url = base_url + '{}/'.format(_suburb) + '{}'.format(_code)
-    print('Url:', url)
+    logging.info(f'Url: {url}')
     try:
         f = urllib.request.urlopen(url)
         page_data = f.read()
@@ -76,7 +77,7 @@ def extractor(suburb, code):
         # for each property url, call the listing function to extract data and append to the listings list
         for prop in properties:
             # DEBUG
-            # print(prop)
+            logging.info(prop)
             _data = listing(prop)
             listings.append(_data)
             # best to run late at night but can add in crawler delay (in secs)
@@ -94,17 +95,17 @@ def extractor(suburb, code):
         file = open('{}.csv'.format(_suburb), 'w+', newline='')
         keys = data[0].keys()
 
-        print('Rows:', len(data))
-        print('Keys:', keys)
+        logging.info(f'Rows: {len(data)}')
+        logging.info(f'Keys: {keys}')
         with file:
             write = csv.DictWriter(file, keys)
             write.writeheader()
             try:
                 write.writerows(data)
             except ValueError as e:
-                print(e)
+                logging.warning(f'Could not write to file: {e}')
                 pass
-        print('End:', datetime.datetime.now())
+        logging.info(f'End: {datetime.datetime.now()}')
     except HTTPError:
-        print('Failed with HTTP Error:', url)
+        logging.warning(f'Failed with HTTP Error: {url}')
         pass
